@@ -1,0 +1,3 @@
+#!/bin/sh
+
+hoe2 'length . concatMap (filter (\[l,h,c,p] -> 1 == length (filter (== T.index c 0) [T.index p (pred $ read (T.unpack l)), T.index p (pred $ read (T.unpack h))]))) . map (^.. regex [rx|(\d+)-(\d+) (\S+): (\S+)|] . groups) . T.lines . T.pack'
