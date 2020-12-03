@@ -1,4 +1,4 @@
 #!/bin/sh
 
-hoe "length . filter id . (\m -> zipWith (\x y -> m!!y!!x == '#') [0,3..] [0..length m-1]) . map cycle . lines"
+hoe "length . filter id . \m -> zipWith (\x y -> m!!y!!x == '#') [0,3..] [0..length m-1] . map cycle . lines"
 
