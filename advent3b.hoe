@@ -1,0 +1,7 @@
+#!/bin/sh
+
+hoe "product .  (\m -> [length $ filter id $ zipWith (\x y -> m!!y!!x == '#') i (takeWhile (< length m) j) | (i,j) <- [([0..],[0..]), ([0,3..],[0..]), ([0,5..],[0..]), ([0,7..],[0..]), ([0..],[0,2..])]]) . map cycle . lines"
+
+
+
+
