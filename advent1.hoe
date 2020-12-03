@@ -1,0 +1,3 @@
+#!/bin/sh
+
+hoe2 'head . (\x -> [a*b*c | a<-x, b<-x, c<-x, a+b+c == 2020]) . map read . words'
