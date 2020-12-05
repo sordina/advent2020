@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# hoe "map show .  (splitOn ['\n']) . lines"
+# hoe "length . filter id . concatMap (concatMap (elem (words \"byr iyr eyr hgt hcl ecl pid\") . (!!0) . splitOn ':') . words) . splitOn ['\n'] . lines"
+
+hoe 'length . filter (flip all (words "byr iyr eyr hgt hcl ecl pid") . flip elem) . map (map (takeWhile (/= (":"!!0))) . words) . splitOn "\n\n"'
+
+
+
