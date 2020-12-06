@@ -1,0 +1,24 @@
+#!/bin/sh
+
+hoe 'let f = [ ("byr", (\x->x>1919&&x<2003).read) , ("iyr", (\x->x>2009&&x<2021).read) , ("eyr", (\x->x>2019&&x<2031).read) , ("hgt", \x-> (\d h->(d=="cm"&&h>149&&h<194)||(d=="in"&&h>58&&h<77))(dropWhile isDigit x) (read$ takeWhile isDigit x)) , ("hcl", \x->length x==7 && take 1 x=="#" && all (flip elem "0123456789abcdef") (drop 1 x)) , ("ecl", flip elem (words "amb blu brn gry grn hzl oth")) , ("pid", \x-> length x == 9 && all isDigit x) ] in length . filter (all (\(a,b)->fromJust (lookup a (("cid", const True):f)) b)) . filter (\x -> all (isJust . flip lookup x) (map fst f)) . map (map (second tail . splitAt 3) . words) . splitOn "\n\n"'
+
+# hoe 'snd ("byr", (\x->x>1919&&x<2003). read) "1930"'
+# hoe 'snd ("iyr", (\x->x>2009&&x<2021). read) "2015"'
+# hoe 'snd ("eyr", (\x->x>2019&&x<2031). read) "2021"'
+# hoe 'snd ("hgt", \x-> (\d h->(d=="cm"&&h>149&&h<194)||(d=="in"&&h>58&&h<77))(dropWhile isDigit x) (read$ takeWhile isDigit x)) "171cm"'
+# hoe 'snd ("hcl", \x->take 1 x=="#" && all (flip elem "0123456789abcdef") (drop 1 x)) "#a1b2c3"'
+# hoe 'snd ("ecl", flip elem (words "amb blu brn gry grn hzl oth")) "amb"'
+# hoe 'snd ("pid", all isDigit) "123456789"'
+
+# byr (Birth Year) - four digits; at least 1920 and at most 2002.
+# iyr (Issue Year) - four digits; at least 2010 and at most 2020.
+# eyr (Expiration Year) - four digits; at least 2020 and at most 2030.
+# hgt (Height) - a number followed by either cm or in:
+# If cm, the number must be at least 150 and at most 193.
+# If in, the number must be at least 59 and at most 76.
+# hcl (Hair Color) - a # followed by exactly six characters 0-9 or a-f.
+# ecl (Eye Color) - exactly one of: amb blu brn gry grn hzl oth.
+# pid (Passport ID) - a nine-digit number, including leading zeroes.
+# cid (Country ID) - ignored, missing or not.
+
+
