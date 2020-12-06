@@ -1,0 +1,4 @@
+#!/bin/sh
+
+hoe2 'maximum.map(sum.zipWith(*)(map(2^)[0..]).map(bool 0 1.flip elem"BR").reverse)'
+
