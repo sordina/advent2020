@@ -1,0 +1,4 @@
+#!/bin/sh
+
+hoe2 'sum.map(length.nub.sort.concat).splitOn[""]'
+
