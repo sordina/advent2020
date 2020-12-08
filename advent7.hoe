@@ -1,0 +1,4 @@
+#!/bin/sh
+
+hoe2 'length.nub.concat.map snd.takeWhile (uncurry (/=)).uncurry zip.(id &&& tail).(\x -> iterate (\y -> nub [ h|(h,t)<-x,z<-y,t==z]) [T.pack "shiny gold"]).concatMap (\(h,t) -> [(j,v)|i<-h,j<-i,u<-t,v<-u]).map((^.. regex [rx|^(\w+\s\w+) bags|] . groups)&&& (^.. regex [rx|\d\s(\w+\s\w+)\sbag|] . groups)).T.lines.T.pack'
+
