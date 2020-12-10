@@ -1,0 +1,76 @@
+#!/bin/sh
+
+hoe2 -m Control.Monad.State ' view _1 . (\x-> let g = gets (view _1) in (0,0,[]) &~ g) . map (\[i,v] -> (i,(read :: String -> Int) (dropWhile (flip elem "+") v))) . map words '
+
+hoe2 -m Control.Monad.State 'show . map (\[i,v] -> (i,(read :: String -> Int) (dropWhile (flip elem "+") v))) . map words ' < advent8.input.small
+#  [("nop",0),("acc",1),("jmp",4),("acc",3),("jmp",-3),("acc",-99),("acc",1),("jmp",-4),("acc",6)]
+
+hoe -m Control.Lens '(1,2) &~ (_1 %= succ)'
+#  (2,2)
+
+hoe -m Control.Lens '(1,2) &~ ((_2 %= (+5)) >> (_1 %= succ))'
+#  (2,7)
+
+hoe -m 'Control.Lens Control.Monad.State' '
+let t = [("nop", \_a -> (_1 %= succ)), ("acc", \n -> (_2 %= (+n)) >> (_1 %= succ)), ("jmp", \j -> _1 %= (+j))] in
+(\x ->
+(0,0,[]) &~
+let g = (zoom _1 get >>= \p -> zoom _3 (gets (elem p)) >>= \q -> _3 %= (p:) >> when (not q) (let (a,b) = x!!p in fromJust (lookup a t) b >> g))
+in g
+)
+.
+map (\[i,v] -> (i, read (dropWhile (flip elem "+") v)))
+.
+map words
+' < advent8.input.small
+# >>> Thu 10 Dec 2020 16:38:17 AEDT
+#  (1,5,[1,4,3,7,6,2,1,0])
+# <<< Thu 10 Dec 2020 16:38:18 AEDT
+
+hoe -m 'Control.Monad.State Control.Lens' '("a","b",[1,2]) &~ ((zoom _3 (gets (elem 2))) >>= (\p -> when p (_3 %= (4:))))'
+#  ("a","b",[4,1,2])
+
+hoe 'elem 1 [1..]'
+# >>> Thu 10 Dec 2020 16:27:26 AEDT
+#  True
+# <<< Thu 10 Dec 2020 16:27:27 AEDT
+
+hoe -m 'Control.Lens Control.Monad.State' '(0,0,[]) &~ (\f -> gets (view _1) >>= \p -> _3 %= (p:) >> zoom _3 (gets (elem p)) >>= \q -> when q f) (_2 %= (+5))'
+#  (0,5,[0])
+
+hoe -m 'Control.Lens Control.Monad.State' '(1::Int,2::Int,[]::[(Int,Int)]) &~ (gets (view _1) >>= \p -> _3 %= ((p,1):))'
+#  (1,2,[(1,1)])
+
+
+
+# (pointer, acc, history)
+
+# hoe2 'let go = gets (view _1) >>= \x-> if x in (0,0,[]) &~ go '
+
+# https://hackage.haskell.org/package/lens-4.19.2/docs/Control-Lens-Operators.html
+
+# execState :: State s a -> s -> s
+# evalState :: State s a -> s -> a
+# runState  :: State s a -> s -> (a, s)
+
+# nop +0
+# acc +1
+# jmp +4
+# acc +3
+# jmp -3
+# acc -99
+# acc +1
+# jmp -4
+# acc +6
+
+#           index
+# nop +0  | 1
+# acc +1  | 2, 8(!)
+# jmp +4  | 3
+# acc +3  | 6
+# jmp -3  | 7
+# acc -99 |
+# acc +1  | 4
+# jmp -4  | 5
+# acc +6  |
+
