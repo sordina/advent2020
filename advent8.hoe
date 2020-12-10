@@ -1,3 +1,3 @@
 #!/bin/sh
 
-hoe -m 'Control.Lens Control.Monad.State' ' let t = [("nop", \_a -> (_1 %= succ)), ("acc", \n -> (_2 %= (+n)) >> (_1 %= succ)), ("jmp", \j -> _1 %= (+j))] in view _2 .  (\x -> (0,0,[]) &~ let g = (zoom _1 get >>= \p -> zoom _3 (gets (elem p)) >>= \q -> _3 %= (p:) >> when (not q) (let (a,b) = x!!p in fromJust (lookup a t) b >> g)) in g) .  map (\[i,v] -> (i, read (dropWhile (flip elem "+") v))) .  map words '
+hoe -m 'Control.Lens Control.Monad.State' 'let t = [("nop", \_a -> (_1 %= succ)), ("acc", \n -> (_2 %= (+n)) >> (_1 %= succ)), ("jmp", \j -> _1 %= (+j))] in view _2 . (\x -> (0,0,[]) &~ let g = (zoom _1 get >>= \p -> zoom _3 (gets (elem p)) >>= \q -> _3 %= (p:) >> when (not q) (let (a,b) = x!!p in fromJust (lookup a t) b >> g)) in g) . map (\[i,v] -> (i, read (dropWhile (flip elem "+") v))) . map words'
