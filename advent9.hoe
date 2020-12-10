@@ -1,0 +1,4 @@
+#!/bin/sh
+
+hoe 'last.head.filter (\x -> null [1 | a <- init x, b <- init x, last x == a + b]).map (map read . take 26).tails.lines'
+

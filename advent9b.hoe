@@ -1,0 +1,4 @@
+#!/bin/sh
+
+hoe 'uncurry (+).(minimum &&& maximum).head.filter ((==675280050) . sum).(\x -> [2..] >>= (\n -> map (take n . map (read :: String -> Int)) x)).tails.lines'
+
