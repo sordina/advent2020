@@ -1,0 +1,4 @@
+#!/bin/sh
+
+hoe 'product.map length.group.filter (flip elem [1,3]).sort.map (uncurry (-)).uncurry zip.(tail &&& id).sort.(\x -> [0] ++ x ++ [maximum x + 3]).map read'
+

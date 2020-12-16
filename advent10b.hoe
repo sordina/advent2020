@@ -1,0 +1,22 @@
+#!/bin/sh
+
+hoe2 -m Data.Array '
+let
+	finds s = map snd . filter ((==s) . fst)
+	edges p l = q =<< tails l
+			where
+			q (x:xs) = map (x,) $ takeWhile (p x) xs
+			q _ = []
+	paths f t l =
+			let
+					a = array (f,t) ((t,1) : [(x, sum $ map (a!) (finds x l)) | x <- [f.. pred t]])
+			in
+			a ! f
+in
+	(\x -> let m = maximum x + 3 in paths 0 m $ edges (\a b -> b <= a + 3) (0 : x ++ [m]))
+	.
+	sort
+	.
+	map read
+' < advent10.input
+
