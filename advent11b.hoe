@@ -1,0 +1,40 @@
+#!/bin/sh
+
+
+hoe -m 'Data.Array' "
+let
+	rules ('L', 0)          = '#'
+	rules ('#', n) | n >= 4 = 'L'
+	rules (x  , _)          = x
+
+	p m x = filter (\x -> x >= 0 && x < m) [pred x .. succ x]
+
+	index (h,w) = [[ ((y,x), [(j,i) | j <- p h y, i <- p w x, (i,j)/=(x,y)]) | x<-[0.. pred w]] | y<-[0.. pred h]]
+
+	bar = length . filter (== '#')
+	baz
+		= unlines
+		.
+		(\(is,l) -> map (map (rules . ((l!) *** bar . map (l!)))) is)
+		.
+		(\(b@(h,w),l) -> (index b, listArray ((0,0),(pred h, pred w)) (concat l)))
+		.
+		((length &&& length . head) &&& id)
+		.
+		lines
+in
+sum . map (length . filter (=='#') . snd) . take 1 . dropWhile (uncurry (/=)) . uncurry zip . (id &&& tail) . iterate baz
+" < advent11.input
+
+
+# If a seat is empty (L) and there are no occupied seats adjacent to it, the seat becomes occupied.
+# If a seat is occupied (#) and four or more seats adjacent to it are also occupied, the seat becomes empty.
+# Otherwise, the seat's state does not change.
+
+# As soon as people start to arrive, you realize your mistake. People don't just
+# care about adjacent seats - they care about the first seat they can see in each
+# of those eight directions!
+
+
+
+
