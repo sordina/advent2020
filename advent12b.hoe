@@ -4,9 +4,9 @@ hoe2 -m Control.Monad.State "
 let
 	x :: (Char,Int) -> State (Int,Int,(Int,Int)) ()
 	x = \case
-		('N',n) -> zoom _3 $ _2 += n
+		('N',n) -> _3._2 += n
 		('S',n) -> x ('N',negate n)
-		('E',n) -> zoom _3 $ _1 += n
+		('E',n) -> _3._1 += n
 		('W',n) -> x ('E',negate n)
 		('L',90)-> _3 %= \(x,y) -> (negate y, x)
 		('L',n) -> x ('L',90) >> x ('L',n-90)
