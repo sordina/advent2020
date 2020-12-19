@@ -2,23 +2,23 @@
 
 hoe2 -m Control.Monad.State "
 let
-	x :: (Char,Int) -> State (Int,Int,Char) ()
-	x ('N',n ) = _2 += n
-	x ('S',n ) = x ('N', negate n)
-	x ('E',n ) = _1 += n
-	x ('W',n ) = x ('E', negate n)
-	x ('L',90) = _3 %= (fromJust.flip lookup [('E','N'),('S','E'),('W','S'),('N','W')])
-	x ('L',n ) = x ('L',90) >> x ('L',n-90)
-	x ('R',n ) = x ('L',360-n)
-	x ('F',n ) = gets (view _3) >>= fromJust . flip lookup [('E',_1+=n),('S',_2-=n),('W',_1-=n),('N',_2+=n)]
+	x :: Char -> Int -> State (Int,Int,Char) ()
+	x 'N' n = _2 += n
+	x 'S' n = x 'N' (negate n)
+	x 'E' n = _1 += n
+	x 'W' n = x 'E' (negate n)
+	x 'L' 90 = _3
+					%= fromJust.flip lookup [('E','N'),('S','E'),('W','S'),('N','W')]
+	x 'L' n = x 'L' 90 >> x 'L' (n-90)
+	x 'R' n = x 'L' (360-n)
+	x 'F' n = gets (view _3) >>= fromJust
+					. flip lookup [('E',_1+=n),('S',_2-=n),('W',_1-=n),('N',_2+=n)]
 
 in
 	(\(i,j,d) -> abs i + abs j)
 	. ((0,0,'E')&~)
-	. mapM_ x
+	. mapM_ (uncurry x)
 	. map (\(l:n)->(l,read n))
 	. words
-
 "
-
 
