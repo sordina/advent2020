@@ -1,0 +1,16 @@
+#!/bin/sh
+
+hoe2 -m Control.Monad.State '
+(\(a,(b,c)) -> b * mod c a)
+.
+(id *** minimumBy (compare `on` snd))
+.
+(\(x,y) -> (x,) $ map (\z -> (z,) $ head $ dropWhile (<x) $ iterate (+z) 0) y)
+.
+(id *** map read . words)
+.
+(read.(!!0) &&& concatMap (\x-> if elem x "x," then " " else [x]).(!!1))
+.
+lines
+'
+

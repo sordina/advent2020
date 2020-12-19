@@ -1,0 +1,8 @@
+#!/bin/sh
+
+hoe2 -m Control.Monad.State '
+((read::String->Int).(!!0) &&& concatMap (\x-> if elem x "x," then " " else [x]).(!!1))
+.
+lines
+'
+
