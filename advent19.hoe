@@ -1,0 +1,21 @@
+#!/bin/sh
+
+hoe2 -m 'Text.Parsec Debug.Trace' '
+let
+foo :: [(String,[[String]])] -> Parsec String () ()
+foo r =
+	let
+	a = M.fromList (map g r)
+	f n@(x:xs)
+		| isDigit x = a ! n
+		| otherwise = () <$ string (init xs)
+	g = second (choice . map (try . mapM_ f))
+	m ! k = fromJust $ M.lookup k m
+	in a ! "0" *> eof
+in
+length .  rights
+. (\(s,p) -> map (parse p "rules") s)
+. (last &&& foo . map ((init . head &&& splitOn ["|"] . tail) . words) .  head)
+. splitOn [""]
+'
+
