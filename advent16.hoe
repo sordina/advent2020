@@ -2,22 +2,17 @@
 
 hoe2 '
 let
-
-between n (a,b) = n >= a && n <= b
-mkRule r n = any (between n) r
+mkRule r n = any (\(a,b) -> n >= a && n <= b) r
 rules r x = none ($ x) (map mkRule r)
-
 in
-
 sum
 .
 (\(r,l) -> filter (rules r) l)
 .
 (
-	map (map ((head &&& last) . map (read @Int)) . filter ((==2) . length) . map (splitOn "-") . words) . head
-	-- map (filter ((==2) . length) . map ((head &&& last) . map (read @Int) . splitOn "-") . words) . head
-	&&&
-	concatMap (read @[Int] . (\x -> "["++x++"]")) . tail . last
+map (map ((head &&& last) . map (read @Int)) . filter ((==2) . length) . map (splitOn "-") . words) . head
+&&&
+concatMap (read @[Int] . (\x -> "["++x++"]")) . tail . last
 )
 .
 splitOn [""]
