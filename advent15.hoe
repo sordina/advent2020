@@ -9,14 +9,10 @@ let
 		m <- _2 <<%= M.insert n i
 		return (i,m)
 
-	g :: Int -> State (Int, M.Map Int Int) Int
 	g n = do
 		(i,m) <- f n
 		if i < 2020
-		then
-			case M.lookup n m of
-				Just j  -> g (i-j)
-				Nothing -> g 0
+		then maybe (g 0) (g . (i-)) (M.lookup n m)
 		else return n
 
 	s = [16,12,1,0,15,7,11]
