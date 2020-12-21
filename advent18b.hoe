@@ -1,0 +1,16 @@
+#!/bin/sh
+
+hoe2 -m 'Text.Parsec Text.Parsec.Expr' '
+let
+	expr  = buildExpressionParser table term
+	term  = choice [between (string "(") (string ")") expr, nat]
+	nat   = read <$> many1 digit
+	table = [ [binary "+" (+) AssocLeft] , [binary "*" (*) AssocLeft] ]
+
+	binary :: String -> (Int -> Int -> Int) -> Assoc -> Operator String () Identity Int
+	binary name fun assoc = Infix (string name >> return fun) assoc
+in
+sum .  rights .  map (parse expr "homework" . filter (not . isSpace))
+'
+
+
