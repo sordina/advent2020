@@ -1,0 +1,30 @@
+#!/bin/sh
+
+
+hoe2 -m 'Text.Parsec Debug.Trace Data.Tree' '
+let
+sub t@("8", _) = t & _2 .~ ([["42"],["42","8"]])
+sub t@("11",_) = t & _2 .~ ([["42","31"],["42","11","31"]])
+sub t          = t
+
+m!k = fromJust $ M.lookup k m
+
+traceId x = trace (show x)  x
+
+build :: [(String,[[String]])] -> Parsec String () (Tree String)
+build r = fmap (Node "0") $ a ! "0" <* eof
+	where
+	a = M.fromList (map (second g) r)
+	g = choice . map (try . mapM f)
+	f n@(x:xs)
+		| isDigit x = Node n <$> (a ! n)
+		| otherwise = Node ss [] <$ string ss    where ss = init xs
+in
+-- length . rights
+(\x -> map drawTree x ++ [show $ length x])
+. rights
+. (\(s,p) -> map (parse p "rules" . traceId) s)
+. (last &&& build . traceId . map (sub . (init . head &&& splitOn ["|"] . tail) . words) .  head)
+. splitOn [""]
+'
+
