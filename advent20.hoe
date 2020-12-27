@@ -1,6 +1,6 @@
 #!/bin/sh
 
-hoe '
+hoe -m 'Data.Tree' '
 let
 
 readInt :: String -> Int
@@ -9,10 +9,11 @@ readInt = read
 match     x = and $ zipWith aligned x (tail x)
 aligned a b = and $ zipWith (==) (map last a) (map head b)
 check     x = all match $ (map (map snd)) $ x ++ transpose x
-square    x = chunksOf (floor (sqrt (fromIntegral (length x)))) x
+square    x = chunksOf (side x) x
+side      x = floor (sqrt (fromIntegral (length x)))
 
-permute [] = [[]]
-permute xs = [y : ys | x <- xs, ys <- permute (delete x xs), y <- flip x]
+permute s n p [] = [[]]
+permute s n p xs = [y : ys | x <- xs, y <- flip x, (mod n s == 0 || aligned (snd p) (snd y)), ys <- permute s (succ n) y (delete x xs)]
 
 res x
 	= sum
@@ -32,15 +33,15 @@ flip x =
 	]
 
 in
-res
-.
-head
-.
-filter check
-.
-map square
-.
-permute
+-- res
+-- .
+-- head
+-- .
+-- filter check
+-- .
+-- map square
+-- .
+(\x -> permute (side x) 0 undefined x)
 .
 map (readInt . filter isDigit . head &&& tail)
 .
