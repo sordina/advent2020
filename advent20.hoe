@@ -1,6 +1,6 @@
 #!/bin/sh
 
-hoe -m 'Data.Tree' '
+hoe -m 'Data.Tree Data.Bool' '
 let
 
 match     x = and $ zipWith aligned x (tail x)
@@ -9,15 +9,15 @@ check     x = all match $ (map (map snd)) $ x ++ transpose (map (map (second tra
 square    x = chunksOf (side x) x
 side      x = floor (sqrt (fromIntegral (length x)))
 
-bool True  y q = y
-bool False y q = q
-
-foo m n p q y = n == 0 || bool m (aligned (transpose (snd q)) (transpose (snd y))) (aligned (snd p) (snd y))
+accept m n p q y
+	| n == 0    = True
+	| m         = aligned (transpose (snd q)) (transpose (snd y))
+	| otherwise = aligned (snd p) (snd y)
 
 permute s n p q [] = [[]]
 permute s n p q xs =
 	let m = mod n s == 0
-	in [y : ys | x <- xs, y <- orient x, foo m n p q y, ys <- permute s (succ n) y (bool m y q) (delete x xs)]
+	in [y : ys | x <- xs, y <- orient x, accept m n p q y, ys <- permute s (succ n) y (bool q y m) (delete x xs)]
 
 res    x = product $ map fst [ head $ head x , last $ head x , head $ last x , last $ last x ]
 orient x = flip x ++ flip (second transpose x)
