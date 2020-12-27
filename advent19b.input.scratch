@@ -1,0 +1,37 @@
+
+shouldn't match:      |  U  B  abbbbbabbbaaaababbaabbbbabababbbabbbbbbabaaaa
+both    should match: |  U  B  bbabbbbaabaabba
+updated should match: | !U  B  babbbbaabbbbbabbbbbbaabaaabaaa
+updated should match: |  U  B  aaabbbbbbaaaabaababaabababbabaaabbababababaaa
+updated should match: | !U  B  bbbbbbbaaaabbbbaaabbabaaa
+updated should match: | !U  B  bbbababbbbaaaaaaaabbababaaababaabab
+both    should match: |  U  B  ababaaaaaabaaab
+both    should match: |  U  B  ababaaaaabbbaba
+updated should match: |  U  B  baabbaaaabbaaaababbaababb
+updated should match: | !U  B  abbbbabbbbaaaababbbbbbaaaababb
+updated should match: | !U  B  aaaaabbaabaaaaababaa
+shouldn't match:      |  U  B  aaaabbaaaabbaaa
+updated should match: |  U  B  aaaabbaabbaaaaaaabbbabbbaaabbaabaaa
+shouldn't match:      |  U  B  babaaabbbaaabaababbaabababaaab
+updated should match: | !U  B  aabbbbbaabbbaaaaaabbbbbababaaaaabbaaabba
+
+updated rules:
+
+bbabbbbaabaabba
+babbbbaabbbbbabbbbbbaabaaabaaa
+aaabbbbbbaaaabaababaabababbabaaabbababababaaa
+bbbbbbbaaaabbbbaaabbabaaa
+bbbababbbbaaaaaaaabbababaaababaabab
+ababaaaaaabaaab
+ababaaaaabbbaba
+baabbaaaabbaaaababbaababb
+abbbbabbbbaaaababbbbbbaaaababb
+aaaaabbaabaaaaababaa
+aaaabbaabbaaaaaaabbbabbbaaabbaabaaa
+aabbbbbaabbbaaaaaabbbbbababaaaaabbaaabba
+
+original rules:
+
+bbabbbbaabaabba
+ababaaaaaabaaab
+ababaaaaabbbaba
