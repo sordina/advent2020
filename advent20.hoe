@@ -3,48 +3,33 @@
 hoe -m 'Data.Tree' '
 let
 
-readInt :: String -> Int
-readInt = read
-
 match     x = and $ zipWith aligned x (tail x)
 aligned a b = and $ zipWith (==) (map last a) (map head b)
-check     x = all match $ (map (map snd)) $ x ++ transpose x
+check     x = all match $ (map (map snd)) $ x ++ transpose (map (map (second transpose)) x)
 square    x = chunksOf (side x) x
 side      x = floor (sqrt (fromIntegral (length x)))
 
-permute s n p [] = [[]]
-permute s n p xs = [y : ys | x <- xs, y <- flip x, (mod n s == 0 || aligned (snd p) (snd y)), ys <- permute s (succ n) y (delete x xs)]
+bool True  y q = y
+bool False y q = q
 
-res x
-	= sum
-	$ map fst
-		[ head $ head x
-		, last $ head x
-		, head $ last x
-		, last $ last x
-		]
+foo m n p q y = n == 0 || bool m (aligned (transpose (snd q)) (transpose (snd y))) (aligned (snd p) (snd y))
 
-flip x =
-	map (\f -> second f x)
-	[ id
-	, reverse
-	, map reverse
-	, reverse . map reverse
-	]
+permute s n p q [] = [[]]
+permute s n p q xs =
+	let m = mod n s == 0
+	in [y : ys | x <- xs, y <- orient x, foo m n p q y, ys <- permute s (succ n) y (bool m y q) (delete x xs)]
+
+res    x = product $ map fst [ head $ head x , last $ head x , head $ last x , last $ last x ]
+orient x = flip x ++ flip (second transpose x)
+flip   x = map (\f -> second f x) [ id , reverse , map reverse , reverse . map reverse ]
 
 in
--- res
--- .
--- head
--- .
--- filter check
--- .
--- map square
--- .
-(\x -> permute (side x) 0 undefined x)
-.
-map (readInt . filter isDigit . head &&& tail)
-.
-splitOn [""]
+res
+. head
+. filter check
+. map square
+. (\x -> permute (side x) 0 undefined undefined x)
+. map (read . filter isDigit . head &&& tail)
+. splitOn [""]
 '
 
