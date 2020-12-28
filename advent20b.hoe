@@ -27,7 +27,11 @@ stitch sqs = concatMap row sqs
 	where
 	row = foldl1 (zipWith (++)) . map snd
 
-monster = [ "                  # " , "#    ##    ##    ###" , " #  #  #  #  #  #   " ]
+monster
+	= [ "                  # "
+	  , "#    ##    ##    ###"
+	  , " #  #  #  #  #  #   "
+	  ]
 
 replaceMonster s = foldr (zipWith2d replace) s (matches2d monster s)
 	where
@@ -65,3 +69,7 @@ minimum
 . splitOn [""]
 '
 
+# hoe 'foldl (\x y -> x ++ show y) "0" [1..10]'
+# >>> Mon 28 Dec 2020 12:59:54 AEDT
+#  012345678910
+# <<< Mon 28 Dec 2020 12:59:54 AEDT
