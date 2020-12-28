@@ -1,0 +1,67 @@
+#!/bin/sh
+
+hoe2 -m 'Data.Bool' '
+let
+
+match     x = and $ zipWith aligned x (tail x)
+aligned a b = and $ zipWith (==) (map last a) (map head b)
+check     x = all match $ (map (map snd)) $ x ++ transpose (map (map (second transpose)) x)
+square    x = chunksOf (side x) x
+side      x = floor (sqrt (fromIntegral (length x)))
+
+accept m n p q y
+	| n == 0    = True
+	| m         = aligned (transpose (snd q)) (transpose (snd y))
+	| otherwise = aligned (snd p) (snd y)
+
+permute s n p q [] = [[]]
+permute s n p q xs =
+	let m = mod n s == 0
+	in [y : ys | x <- xs, y <- orient x, accept m n p q y, ys <- permute s (succ n) y (bool q y m) (delete x xs)]
+
+res    x = product $ map fst [ head $ head x , last $ head x , head $ last x , last $ last x ]
+orient x = flop x ++ flop (second transpose x)
+flop   x = map (flip second x) [ id , reverse , map reverse , reverse . map reverse ]
+
+stitch sqs = concatMap row sqs
+	where
+	row = foldl1 (zipWith (++)) . map snd
+
+monster = [ "                  # " , "#    ##    ##    ###" , " #  #  #  #  #  #   " ]
+
+replaceMonster s = foldr (zipWith2d replace) s (matches2d monster s)
+	where
+	replace a b
+		| elem a "#" = head "O"
+		| otherwise  = b
+
+matches2d p s = [o | y <- [0.. hs-hp], x <- [0.. ws-wp], o <- [offset2d (x,y) p], and $ map and $ zipWith2d f o s]
+	where
+	hs = length s
+	hp = length p
+	ws = length (head s)
+	wp = length (head p)
+	f a b | elem a "#" = elem b "#"
+	      | otherwise  = True
+
+zipWith2d f = zipWith (zipWith f)
+
+offset2d (x,y) = (\s -> replicate y p ++ s ++ repeat p) . map (\s -> take x p ++ s ++ p) where p = cycle " "
+
+in
+minimum
+. map (length . filter (flip elem "#"))
+. map (concat . replaceMonster . snd)
+-- concatMap ((++["\n"]) . replaceMonster . snd) -- Show Replacements
+. orient
+. (undefined,)
+
+. stitch
+. head
+. filter check
+. map square
+. (\x -> permute (side x) 0 undefined undefined x)
+. map (head &&& tail)
+. splitOn [""]
+'
+

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-hoe -m 'Data.Tree Data.Bool' '
+hoe -m 'Data.Bool' '
 let
 
 match     x = and $ zipWith aligned x (tail x)
