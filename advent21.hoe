@@ -14,9 +14,9 @@ reduce l = map (second (\\ map fst s) . first (\\ concatMap snd s)) l
 in
 length
 .
-(\(a,b) -> concatMap (filter (flip elem b)) a)
+concatMap fst
 .
-(map fst &&& concatMap fst . fixf reduce)
+fixf reduce
 .
 map (words . takeWhile (foo "(") &&& tail . words . filter (foo ",") . init . dropWhile (foo "("))
 .
