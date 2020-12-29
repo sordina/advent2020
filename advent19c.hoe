@@ -26,8 +26,8 @@ build r = a ! "0"
 	a = M.fromList (map (second g) r)
 	g = choice . map (mapM_ f)
 	f n@(x:xs)
-		| isDigit x  = () <$ a ! n
-		| otherwise  = () <$ string (init xs)
+		| isDigit x = a ! n
+		| otherwise = () <$ string (init xs)
 in
 length
 . map (fst . head)
