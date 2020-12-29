@@ -1,0 +1,23 @@
+#!/bin/sh
+
+hoe2 '
+let
+f ([],d) = d
+f (b,[]) = b
+f (a:b,c:d)
+	| a > c     = f (b ++ [a,c], d)
+	| otherwise = f (b, d ++ [c,a])
+
+r :: String -> Int
+r = read
+
+in
+sum
+. zipWith (*) [1..]
+. reverse
+. f
+. (head &&& last)
+. map (tail . map r)
+. splitOn [[]]
+'
+
