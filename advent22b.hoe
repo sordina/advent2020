@@ -1,0 +1,33 @@
+#!/bin/sh
+
+hoe2 -m Debug.Trace '
+let
+t h l n s c = trace (show l ++ " " ++ show (length (fst h)) ++ " " ++ show n ++ " " ++ s) c
+
+f l n p h@([],d) = t h l n "win p2" h
+f l n p h@(b,[]) = t h l n "win p1" h
+f l n p h@(a:b,c:d)
+	| S.member h p = tl "p1 instant" $ f l sn hp (b ++ [a,c], d)
+	| a <= length b && c <= length d =
+			tl "recur" $
+				if null (snd (f (succ l) 1 S.empty (take a b, take c d)))
+				then f l sn hp (b ++ [a,c], d)
+				else f l sn hp (b, d ++ [c,a])
+	| a > c     = tl "p1" $ f l sn hp (b ++ [a,c], d)
+	| otherwise = tl "p2" $ f l sn hp (b, d ++ [c,a])
+	where
+	sn = succ n
+	tl = t h l n
+	hp = S.insert h p
+
+in
+sum
+. zipWith (*) [1..]
+. reverse
+. uncurry (++)
+. f 1 1 S.empty
+. (head &&& last)
+. map (tail . map read)
+. splitOn [[]]
+'
+
