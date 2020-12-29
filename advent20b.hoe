@@ -20,20 +20,14 @@ permute s n p q xs =
 	in [y : ys | x <- xs, y <- orient x, accept m n p q y, ys <- permute s (succ n) y (bool q y m) (delete x xs)]
 
 res    x = product $ map fst [ head $ head x , last $ head x , head $ last x , last $ last x ]
-orient x = flop x ++ flop (second transpose x)
-flop   x = map (flip second x) [ id , reverse , map reverse , reverse . map reverse ]
+orient x = flop x ++ flop (second reverse x)
+flop   x = map (flip second x) [ id , rleft, rright, reverse . map reverse ]
+rleft    = reverse . transpose
+rright   = map reverse . transpose
+stitch   = concatMap $ foldr1 (zipWith (++)) . map (init . tail . map (init . tail) . snd)
+monster  = [ "                  # " , "#    ##    ##    ###" , " #  #  #  #  #  #   " ]
 
-stitch sqs = concatMap row sqs
-	where
-	row = foldl1 (zipWith (++)) . map snd
-
-monster
-	= [ "                  # "
-	  , "#    ##    ##    ###"
-	  , " #  #  #  #  #  #   "
-	  ]
-
-replaceMonster s = foldr (zipWith2d replace) s (matches2d monster s)
+replaceMonster s = foldr (zipWith2dx replace) s (matches2d monster s)
 	where
 	replace a b
 		| elem a "#" = head "O"
@@ -48,18 +42,19 @@ matches2d p s = [o | y <- [0.. hs-hp], x <- [0.. ws-wp], o <- [offset2d (x,y) p]
 	f a b | elem a "#" = elem b "#"
 	      | otherwise  = True
 
-zipWith2d f = zipWith (zipWith f)
+zipWith2d  f   = zipWith (zipWith f) -- faster version for matching
+zipWith2dx f a = zipWith2d f (map (++ spc) a ++ repeat spc)
 
-offset2d (x,y) = (\s -> replicate y p ++ s ++ repeat p) . map (\s -> take x p ++ s ++ p) where p = cycle " "
+spc = cycle " "
+
+offset2d (x,y) = (replicate y "" ++) . map (take x spc ++)
 
 in
+
 minimum
-. map (length . filter (flip elem "#"))
-. map (concat . replaceMonster . snd)
--- concatMap ((++["\n"]) . replaceMonster . snd) -- Show Replacements
+. map (sum . map (length . filter (flip elem "#")) . replaceMonster . snd)
 . orient
 . (undefined,)
-
 . stitch
 . head
 . filter check
@@ -69,7 +64,3 @@ minimum
 . splitOn [""]
 '
 
-# hoe 'foldl (\x y -> x ++ show y) "0" [1..10]'
-# >>> Mon 28 Dec 2020 12:59:54 AEDT
-#  012345678910
-# <<< Mon 28 Dec 2020 12:59:54 AEDT
