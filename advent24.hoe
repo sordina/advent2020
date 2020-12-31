@@ -1,0 +1,34 @@
+#!/bin/sh
+
+hoe2 -m Debug.Trace "
+let
+
+tokenize []           = []
+tokenize ('e'    :xs) = 0 : tokenize xs
+tokenize ('s':'e':xs) = 1 : tokenize xs
+tokenize ('s':'w':xs) = 2 : tokenize xs
+tokenize ('w'    :xs) = 3 : tokenize xs
+tokenize ('n':'w':xs) = 4 : tokenize xs
+tokenize ('n':'e':xs) = 5 : tokenize xs
+
+coordinate 0 = (1,0)
+coordinate 1 = (1,-1)
+coordinate 2 = (0,-1)
+coordinate 3 = (-1,0)
+coordinate 4 = (-1,1)
+coordinate 5 = (0,1)
+
+in
+length
+.
+filter odd
+.
+map length
+.
+group
+.
+sort
+.
+map ((sum *** sum) . unzip . map coordinate . tokenize)
+"
+
