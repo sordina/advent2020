@@ -1,13 +1,10 @@
 #!/bin/sh
 
+# Actual fast solution - Uses a mutable vector.
+
 hoe2 -m 'Data.Vector Data.Vector.Mutable' '
 
 let
-
-d n a l h
-  | Prelude.elem n a = d (pred n) a l h
-  | n < l            = d h a l h
-  | otherwise        = n
 
 readMV    = Data.Vector.Mutable.read
 writeMV   = Data.Vector.Mutable.write
@@ -16,47 +13,47 @@ thawV     = Data.Vector.thaw
 maximumV  = Data.Vector.maximum
 minimumV  = Data.Vector.minimum
 fromListV = Data.Vector.fromList
+(+++)     = (Prelude.++)
+(!!!)     = (Data.Vector.!)
 
-(+++) = (Prelude.++)
-(!!!) = (Data.Vector.!)
-
-move l h v i = do
-    a_ <- readMV v i
-    b_ <- readMV v a_
-    c_ <- readMV v b_
-    d_ <- readMV v c_
-    let n = d (pred i) [a_,b_,c_] l h
-    o <- readMV v n
-    writeMV v i d_
-    writeMV v n a_
-    writeMV v c_ o
-    readMV v i
-
-look l = a * b
-  where
-    a = l !!! 1
-    b = l !!! a
-
-iterateM_ :: (Eq t, Num t, Monad m, Enum t) => t -> (a -> m a) -> a -> m a
 iterateM_ 0 _ i = return i
 iterateM_ n f i = f i >>= iterateM_ (pred n) f
 
-prep =
-  fromListV
-  . Prelude.map snd
-  . sort
-  . (\l -> Prelude.zip l (Prelude.tail l))
-  . (\l -> 0 : l +++ [succ (Prelude.maximum l) .. 1000000] +++ [Prelude.head l])
+d n a l h
+	| Prelude.elem n a = d (pred n) a l h
+	| n < l            = d h a l h
+	| otherwise        = n
 
-main :: IO ()
-main = do
-  l@(n:_) <- Prelude.map (Prelude.read . return) . Prelude.head . words <$> getLine
-  let v = prep l
-  m <- thawV v
-  _ <- iterateM_ (10000000 :: Int) (move (minimumV v) (maximumV v) m) n
-  f <- freezeV m
-  print $ look f
+move l h v i = do
+	a_ <- readMV v i
+	b_ <- readMV v a_
+	c_ <- readMV v b_
+	d_ <- readMV v c_
+	let n = d (pred i) [a_,b_,c_] l h
+	o <- readMV v n
+	writeMV v i d_
+	writeMV v n a_
+	writeMV v c_ o
+	readMV v i
+
+look l = a * b
+	where
+	a = l !!! 1
+	b = l !!! a
+
+prep
+	= fromListV
+	. Prelude.map snd
+	. sort
+	. (\l -> Prelude.zip l (Prelude.tail l))
+	. (\l -> 0 : l +++ [succ (Prelude.maximum l) .. 1000000] +++ [Prelude.head l])
 
 in
-main
+do
+	l@(n:_) <- Prelude.map (Prelude.read . return) . Prelude.head . words <$> getLine
+	let v = prep l
+	m <- thawV v
+	_ <- iterateM_ (10000000 :: Int) (move (minimumV v) (maximumV v) m) n
+	f <- freezeV m
+	print $ look f
 '

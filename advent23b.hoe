@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Note: Too slow!
+# Note: Too slow! See advent23bvec.hoe for timely solution.
 
 hoe2 -m 'Debug.Trace Data.Sequence' '
 let
