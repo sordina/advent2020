@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Note: Too slow!
+
 hoe2 -m 'Debug.Trace Data.Sequence' '
 let
 
