@@ -24,4 +24,6 @@ executable advent2020
     lens-regex-pcre,
     text,
     lens,
-    split
+    split,
+    mtl,
+    array
