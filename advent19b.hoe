@@ -21,7 +21,7 @@ n :: [a] -> Bool
 n = null
 
 build :: [(String,[[String]])] -> FreeT ((->) Char) [] (Tree String)
-build r = fmap (Node "0") $ a ! "0"
+build r = fmap (Node "0") $ a ! "0" <* string "EOF"
 	where
 	a = M.fromList (map (second g) r)
 	g = choice . map (traverse f)
@@ -32,8 +32,8 @@ in
 (\x -> map drawTree x ++ [show $ length x])
 . map (fst . head)
 . filter (not . null)
-. (\(s,p) -> map (filter (null . snd) . parseString p) s)
-. (last &&& build . map (sub . (init . head &&& splitOn ["|"] . tail) . words) .  head)
+. (\(s,p) -> map (parseString p) s)
+. (map (++"EOF") . last &&& build . map (sub . (init . head &&& splitOn ["|"] . tail) . words) .  head)
 . splitOn [""]
 '
 

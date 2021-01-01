@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 hoe2 -m 'Control.Monad.Trans.Free Control.Monad.State' '
 let
 
@@ -11,13 +10,14 @@ char c           = mfilter (==c) token
 string           = mapM char
 choice           = foldl (<|>) empty
 m ! k            = fromJust $ M.lookup k m
+eof              = "EOF"
 
 sub t@("8", _)   = t & _2 .~ [["42"],["42","8"]]
 sub t@("11",_)   = t & _2 .~ [["42","31"],["42","11","31"]]
 sub t            = t
 
 build :: [(String,[[String]])] -> FreeT ((->) Char) [] ()
-build r = a ! "0"
+build r = a ! "0" <* string eof
 	where
 	a = M.fromList (map (second g) r)
 	g = choice . map (mapM_ f)
@@ -28,8 +28,8 @@ in
 length
 . map (fst . head)
 . filter (not . null)
-. (\(s,p) -> map (filter (null . snd) . parseString p) s)
-. (last &&& build . map (sub . (init . head &&& splitOn ["|"] . tail) . words) .  head)
+. (\(s,p) -> map (parseString p) s)
+. (map (++eof) . last &&& build . map (sub . (init . head &&& splitOn ["|"] . tail) . words) .  head)
 . splitOn [""]
 '
 
