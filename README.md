@@ -25,3 +25,4 @@ Day 7: Use of Zoom from Lens.
 Day 10: Dynamic programming solution using Arrays for subsolutions.
 Day 12: Heavy use of stateful lenses. Tabulated functions.
 Day 13: Chinese remainder theoreb using `arithmoi` library.
+Day 14: More stateful lenses.
