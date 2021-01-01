@@ -6,3 +6,4 @@ import Data.List.Split (splitOn)
 
 day6 = show . sum . map (length . nub . sort . concat) . splitOn [""] . lines
 
+day6b = undefined

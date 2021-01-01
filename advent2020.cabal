@@ -10,7 +10,12 @@ extra-source-files:  CHANGELOG.md, README.md
 
 executable advent2020
   main-is:             Main.hs
-  other-modules:       Advent01, Advent02, Advent03, Advent04, Advent05, Advent06
+  other-modules:
+    Advent01, Advent02, Advent03, Advent04, Advent05,
+    Advent06, Advent07, Advent08, Advent09, Advent10,
+    Advent11, Advent12, Advent13, Advent14, Advent15,
+    Advent16, Advent17, Advent18, Advent19, Advent20,
+    Advent21, Advent22, Advent23, Advent24, Advent25
   hs-source-dirs:      src
   default-language:    Haskell2010
   build-depends:
