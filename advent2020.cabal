@@ -1,0 +1,22 @@
+cabal-version:       >=1.10
+
+name:                advent2020
+version:             0.1.0.0
+license-file:        LICENSE
+author:              Lyndon Maydwell
+maintainer:          lyndon@sordina.net
+build-type:          Simple
+extra-source-files:  CHANGELOG.md, README.md
+
+executable advent2020
+  main-is:             Main.hs
+  other-modules:       Advent01, Advent02, Advent03, Advent04
+  hs-source-dirs:      src
+  default-language:    Haskell2010
+  build-depends:
+    base >=4.14 && <4.15,
+    containers,
+    lens-regex-pcre,
+    text,
+    lens,
+    split
