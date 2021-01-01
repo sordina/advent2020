@@ -1,11 +1,11 @@
 module Advent08 where
 
-import Control.Lens
-import Control.Monad.State
+import Control.Lens ( view, (&~), (%=), Field1(_1), Field2(_2), Field3(_3), Zoom(zoom) )
+import Control.Monad.State ( unless, when, MonadState(get), gets )
 import Data.Maybe (fromMaybe, fromJust)
 import Control.Arrow (first, Arrow((&&&)))
 
-day8 = show . view _2 . (\x -> (0,0,[]) &~ let g = (zoom _1 get >>= \p -> zoom _3 (gets (elem p)) >>= \q -> _3 %= (p:) >> when (not q) (let (a,b) = x!!p in fromJust (lookup a t) b >> g)) in g) . map (\[i,v] -> (i, read (dropWhile (flip elem "+") v))) . map words . lines
+day8 = show . view _2 . (\x -> (0,0,[]) &~ let g = (zoom _1 get >>= \p -> zoom _3 (gets (elem p)) >>= \q -> _3 %= (p:) >> unless q (let (a,b) = x!!p in fromJust (lookup a t) b >> g)) in g) . map (\[i,v] -> (i, read (dropWhile (flip elem "+") v))) . map words . lines
     where
     t = [("nop", const (_1 %= succ)), ("acc", \n -> (_2 %= (+n)) >> (_1 %= succ)), ("jmp", \j -> _1 %= (+j))]
 

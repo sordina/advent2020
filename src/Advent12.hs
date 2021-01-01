@@ -1,49 +1,36 @@
+{-# LANGUAGE LambdaCase #-}
+
 module Advent12 where
 
-day12 = undefined
-day12b = undefined
+import Control.Monad.State
+import Control.Lens ( (&~), (<%=), (%=), (+=), (-=), Field1(_1), Field2(_2), Field3(_3) )
+import Data.Maybe (fromJust)
 
--- hoe2 -m Control.Monad.State "
--- let
--- 	x :: (Char,Int) -> State (Int,Int,Char) ()
--- 	x = \case
--- 		('N',n) -> _2 += n
--- 		('S',n) -> x ('N',negate n)
--- 		('E',n) -> _1 += n
--- 		('W',n) -> x ('E',negate n)
--- 		('L',90)-> _3 %= fromJust.flip lookup [('E','N'),('S','E'),('W','S'),('N','W')]
--- 		('L',n) -> x ('L',90) >> x ('L',n-90)
--- 		('R',n) -> x ('L',360-n)
--- 		('F',n) -> _3<%=id >>= fromJust . flip lookup [('E',_1+=n),('S',_2-=n),('W',_1-=n),('N',_2+=n)]
--- in
--- 	(\(a,b,_)->abs a+abs b)
--- 	. ((0,0,'E')&~)
--- 	. mapM_ x
--- 	. map (\(l:n)->(l,read n))
--- 	. words
--- "
+day12 = show . (\(a,b,_)->abs a+abs b) . ((0,0,'E')&~) . mapM_ x . map (\(l:n)->(l,read n)) . words
+  where
+  x :: (Char,Int) -> State (Int,Int,Char) ()
+  x = \case
+    ('N',n)  -> _2 += n
+    ('S',n)  -> x ('N',negate n)
+    ('E',n)  -> _1 += n
+    ('W',n)  -> x ('E',negate n)
+    ('L',90) -> _3 %= fromJust . flip lookup [('E','N'),('S','E'),('W','S'),('N','W')]
+    ('L',n)  -> x ('L',90) >> x ('L',n-90)
+    ('R',n)  -> x ('L',360-n)
+    ('F',n)  -> _3<%=id >>= fromJust . flip lookup [('E',_1+=n),('S',_2-=n),('W',_1-=n),('N',_2+=n)]
 
--- #!/bin/sh
-
--- hoe2 -m Control.Monad.State "
--- let
--- 	x :: (Char,Int) -> State (Int,Int,(Int,Int)) ()
--- 	x = \case
--- 		('N',n) -> _3._2 += n
--- 		('S',n) -> x ('N',negate n)
--- 		('E',n) -> _3._1 += n
--- 		('W',n) -> x ('E',negate n)
--- 		('L',90)-> _3 %= \(x,y) -> (negate y, x)
--- 		('L',n) -> x ('L',90) >> x ('L',n-90)
--- 		('R',n) -> x ('L',360-n)
--- 		('F',n) -> replicateM_ n $ modify (\(a,b,c@(i,j)) -> (a+i,b+j,c))
--- in
--- 	(\(a,b,_)->abs a+abs b)
--- 	. ((0,0,(10,1))&~)
--- 	. mapM_ x
--- 	. map (\(l:n)->(l,read n))
--- 	. words
--- "
+day12b = show . (\(a,b,_)->abs a+abs b) . ((0,0,(10,1))&~) . mapM_ x . map (\(l:n)->(l,read n)) . words
+  where
+  x :: (Char,Int) -> State (Int,Int,(Int,Int)) ()
+  x = \case
+    ('N',n) -> _3._2 += n
+    ('S',n) -> x ('N',negate n)
+    ('E',n) -> _3._1 += n
+    ('W',n) -> x ('E',negate n)
+    ('L',90)-> _3 %= \(x,y) -> (negate y, x)
+    ('L',n) -> x ('L',90) >> x ('L',n-90)
+    ('R',n) -> x ('L',360-n)
+    ('F',n) -> replicateM_ n $ modify (\(a,b,c@(i,j)) -> (a+i,b+j,c))
 
 -- # Action N means to move the waypoint north by the given value.
 -- # Action S means to move the waypoint south by the given value.

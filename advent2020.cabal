@@ -26,4 +26,5 @@ executable advent2020
     lens,
     split,
     mtl,
-    array
+    array,
+    arithmoi
