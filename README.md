@@ -2,6 +2,13 @@
 
 Various solutions to the 2020 problems. Golf style!
 
+## Background
+
+Original solutions were written as "oneliners" with a custom build of the
+`hoe` tool. You can find these solutions in the root of this project. Since
+this makes it difficult to run them yourself, I've created a cabal project to
+explicitly list all the dependencies, etc.
+
 ## Source
 
 Source for solutions is found in `src/`. With part one and two located in the same AdventDAY.hs file.
@@ -10,7 +17,7 @@ Source for solutions is found in `src/`. With part one and two located in the sa
 
 All solutions are run by calling `cabal run advent2020 DAY[b]`.
 
-Input is provided on STDIN.
+Input is provided on STDIN except in a few cases indicated by the lack of `interact` in `Main.hs`.
 
 Example: `cabal run advent2020 22b < advent22.input`.
 
