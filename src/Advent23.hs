@@ -5,7 +5,9 @@ module Advent23 where
 -- import Data.Vector.Mutable as MV
 
 import Data.Maybe (fromJust)
-import Data.List (elemIndex)
+import Data.List (elemIndex, sort)
+import qualified Data.Vector as V
+import qualified Data.Vector.Mutable as MV
 
 day23
     = (++"\n") . (!! 100)
@@ -32,64 +34,44 @@ day23
         n      = d (pred x) a ys (minimum c) (maximum c)
         (e,f)  = splitAt (succ $ fromJust $ elemIndex n ys) ys
 
-day23b = undefined
+day23b = do
+  l@(n:_) <- Prelude.map (Prelude.read . return) . Prelude.head . words <$> getLine
+  let v = prep l
+  m <- V.thaw v
+  _ <- iterateM_ (10000000 :: Int) (move (V.minimum v) (V.maximum v) m) n
+  f <- V.freeze m
+  print $ look f
 
-{-
+  where
 
-hoe2 -m 'Data.Vector Data.Vector.Mutable' '
+    iterateM_ 0 _ i = return i
+    iterateM_ n f i = f i >>= iterateM_ (pred n) f
 
-let
+    d n a l h
+        | n `elem` a = d (pred n) a l h
+        | n < l      = d h a l h
+        | otherwise  = n
 
-readMV    = Data.Vector.Mutable.read
-writeMV   = Data.Vector.Mutable.write
-freezeV   = Data.Vector.freeze
-thawV     = Data.Vector.thaw
-maximumV  = Data.Vector.maximum
-minimumV  = Data.Vector.minimum
-fromListV = Data.Vector.fromList
-(+++)     = (Prelude.++)
-(!!!)     = (Data.Vector.!)
+    move l h v i = do
+        a_ <- MV.read v i
+        b_ <- MV.read v a_
+        c_ <- MV.read v b_
+        d_ <- MV.read v c_
+        let n = d (pred i) [a_,b_,c_] l h
+        o <- MV.read v n
+        MV.write v i d_
+        MV.write v n a_
+        MV.write v c_ o
+        MV.read  v i
 
-iterateM_ 0 _ i = return i
-iterateM_ n f i = f i >>= iterateM_ (pred n) f
+    look l = a * b
+        where
+        a = l V.! 1
+        b = l V.! a
 
-d n a l h
-	| Prelude.elem n a = d (pred n) a l h
-	| n < l            = d h a l h
-	| otherwise        = n
-
-move l h v i = do
-	a_ <- readMV v i
-	b_ <- readMV v a_
-	c_ <- readMV v b_
-	d_ <- readMV v c_
-	let n = d (pred i) [a_,b_,c_] l h
-	o <- readMV v n
-	writeMV v i d_
-	writeMV v n a_
-	writeMV v c_ o
-	readMV v i
-
-look l = a * b
-	where
-	a = l !!! 1
-	b = l !!! a
-
-prep
-	= fromListV
-	. Prelude.map snd
-	. sort
-	. (\l -> Prelude.zip l (Prelude.tail l))
-	. (\l -> 0 : l +++ [succ (Prelude.maximum l) .. 1000000] +++ [Prelude.head l])
-
-in
-do
-	l@(n:_) <- Prelude.map (Prelude.read . return) . Prelude.head . words <$> getLine
-	let v = prep l
-	m <- thawV v
-	_ <- iterateM_ (10000000 :: Int) (move (minimumV v) (maximumV v) m) n
-	f <- freezeV m
-	print $ look f
-'
-
--}
+    prep
+        = V.fromList
+        . Prelude.map snd
+        . sort
+        . (\l -> Prelude.zip l (Prelude.tail l))
+        . (\l -> 0 : l ++ [succ (Prelude.maximum l) .. 1000000] ++ [Prelude.head l])

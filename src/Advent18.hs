@@ -2,9 +2,9 @@ module Advent18 where
 
 import Data.Char (isSpace, isDigit)
 import Data.Either (rights)
--- TODO: Install parsec
--- import Text.Parsec
--- import Text.Parsec.Expr
+import Text.Parsec ( digit, string, between, choice, many1, parse )
+import Text.Parsec.Expr ( buildExpressionParser, Assoc(AssocLeft), Operator(Infix) )
+import Control.Monad.Identity (Identity)
 
 day18 = show . sum . map (parse . reverse . filter (not . isSpace)) . lines
     where
@@ -29,14 +29,11 @@ day18 = show . sum . map (parse . reverse . filter (not . isSpace)) . lines
 
 day18b = show . sum . rights . map (parse expr "homework" . filter (not . isSpace)) . lines
     where
-    parse = undefined
-    expr  = undefined
--- let
--- 	expr  = buildExpressionParser table term
--- 	term  = choice [between (string "(") (string ")") expr, nat]
--- 	nat   = read <$> many1 digit
--- 	table = [ [binary "+" (+) AssocLeft] , [binary "*" (*) AssocLeft] ]
+    expr  = buildExpressionParser table term
+    term  = choice [between (string "(") (string ")") expr, nat]
+    nat   = read <$> many1 digit
+    table = [ [binary "+" (+) AssocLeft] , [binary "*" (*) AssocLeft] ]
 
--- 	binary :: String -> (Int -> Int -> Int) -> Assoc -> Operator String () Identity Int
--- 	binary name fun assoc = Infix (string name >> return fun) assoc
+    binary :: String -> (Int -> Int -> Int) -> Assoc -> Operator String () Identity Int
+    binary name fun assoc = Infix (string name >> return fun) assoc
 

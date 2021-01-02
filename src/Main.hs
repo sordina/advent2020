@@ -76,7 +76,7 @@ days =
     , ("22",  interact Advent22.day22)
     , ("22b", interact Advent22.day22b)
     , ("23",  interact Advent23.day23)
-    , ("23b", interact Advent23.day23b)
+    , ("23b",          Advent23.day23b)
     , ("24",  interact Advent24.day24)
     , ("24b", interact Advent24.day24b)
     , ("25",  interact Advent25.day25)

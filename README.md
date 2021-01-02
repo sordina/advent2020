@@ -49,11 +49,6 @@ Day 23: Cup game - Simple solution for part 1. Very slow for part 2 - Had to fin
 Day 24: Hexagon grid - Main trick was translating "3d" hex coords to "2d" hex coords.
 Day 25: Just used a brute force translation of the algorithm description. Hoped to spot an obvious number-theory approach that would solve this instantly, but nothing came to mind.
 
-## TODO:
-
-* Install deps for 18
-* Install deps for 23
-
 ## General Observations
 
 Missing `fixf` function from stdlib.

@@ -27,4 +27,6 @@ executable advent2020
     split,
     mtl,
     array,
-    arithmoi
+    arithmoi,
+    parsec,
+    vector
