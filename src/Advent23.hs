@@ -1,77 +1,95 @@
 module Advent23 where
 
-day23 = undefined
+-- TODO: Import Vector
+-- import Data.Vector         as V
+-- import Data.Vector.Mutable as MV
+
+import Data.Maybe (fromJust)
+import Data.List (elemIndex)
+
+day23
+    = (++"\n") . (!! 100)
+    . map (
+        concatMap show
+        . (\l -> take (pred $ length l) $ tail $ dropWhile (/= 1) $ cycle l)
+    )
+    . iterate move
+    . map (read . return) . head . words
+
+    where
+
+    d n a b l h
+        | n `elem` a = d (pred n) a b l h
+        | n < l      = d h a b l h
+        | otherwise  = n
+
+    rl n c = take l $ drop n (cycle c) where l = length c
+
+    move c@(x:xs) = rl 1 $ e ++ a ++ f
+        where
+        (a,b)  = splitAt 3 xs
+        ys     = x:b
+        n      = d (pred x) a ys (minimum c) (maximum c)
+        (e,f)  = splitAt (succ $ fromJust $ elemIndex n ys) ys
+
 day23b = undefined
 
--- hoe2 -m Debug.Trace '
--- let
+{-
 
--- d n a b l h
--- 	| elem n a  = d (pred n) a b l h
--- 	| n < l     = d h a b l h
--- 	| otherwise = n
+hoe2 -m 'Data.Vector Data.Vector.Mutable' '
 
--- rl n c = take l $ drop n (cycle c)     where l = length c
+let
 
--- move c@(x:xs) = rl 1 $ e ++ a ++ f
--- 	where
--- 	(a,b)  = splitAt 3 xs
--- 	ys     = x:b
--- 	n      = d (pred x) a ys (minimum c) (maximum c)
--- 	(e,f)  = splitAt (succ $ fromJust $ elemIndex n ys) ys
+readMV    = Data.Vector.Mutable.read
+writeMV   = Data.Vector.Mutable.write
+freezeV   = Data.Vector.freeze
+thawV     = Data.Vector.thaw
+maximumV  = Data.Vector.maximum
+minimumV  = Data.Vector.minimum
+fromListV = Data.Vector.fromList
+(+++)     = (Prelude.++)
+(!!!)     = (Data.Vector.!)
 
--- main
--- 	= (++"\n")
--- 	. (!! 100)
--- 	. map
--- 	( concatMap show
--- 	. (\l -> take (pred $ length l) $ tail $ dropWhile (/= 1) $ cycle l)
--- 	)
--- 	. iterate move
--- 	. map ((read :: String->Int) . return)
--- 	. head
--- 	. words
+iterateM_ 0 _ i = return i
+iterateM_ n f i = f i >>= iterateM_ (pred n) f
 
--- in
--- main
--- '
+d n a l h
+	| Prelude.elem n a = d (pred n) a l h
+	| n < l            = d h a l h
+	| otherwise        = n
 
--- #!/bin/sh
+move l h v i = do
+	a_ <- readMV v i
+	b_ <- readMV v a_
+	c_ <- readMV v b_
+	d_ <- readMV v c_
+	let n = d (pred i) [a_,b_,c_] l h
+	o <- readMV v n
+	writeMV v i d_
+	writeMV v n a_
+	writeMV v c_ o
+	readMV v i
 
--- # Note: Too slow! See advent23bvec.hoe for timely solution.
+look l = a * b
+	where
+	a = l !!! 1
+	b = l !!! a
 
--- hoe2 -m 'Debug.Trace Data.Sequence' '
--- let
+prep
+	= fromListV
+	. Prelude.map snd
+	. sort
+	. (\l -> Prelude.zip l (Prelude.tail l))
+	. (\l -> 0 : l +++ [succ (Prelude.maximum l) .. 1000000] +++ [Prelude.head l])
 
--- d :: Int -> Seq Int -> Seq Int -> Int -> Int -> Int
--- d n a b l h
--- 	| elem n a  = d (pred n) a b l h
--- 	| n < l     = d h a b l h
--- 	| otherwise = n
+in
+do
+	l@(n:_) <- Prelude.map (Prelude.read . return) . Prelude.head . words <$> getLine
+	let v = prep l
+	m <- thawV v
+	_ <- iterateM_ (10000000 :: Int) (move (minimumV v) (maximumV v) m) n
+	f <- freezeV m
+	print $ look f
+'
 
--- rl (x :<| xs) = xs :|> x
-
--- move l h c@(x :<| xs) = rl $ e >< a >< f
--- 	where
--- 	(a,b)  = Data.Sequence.splitAt 3 xs
--- 	ys     = x :<| b
--- 	n      = d (pred x) a ys l h
--- 	(e,f)  = Data.Sequence.splitAt (succ $ fromJust $ elemIndexL n ys) ys
-
--- look l@(a :<| b :<| _) = product $ Data.Sequence.take 2 $ Data.Sequence.drop (succ i) (l :|> a :|> b)
--- 	where
--- 	i = fromJust $ elemIndexL 1 l
-
--- main
--- 	= look
--- 	. (!! 10000)
--- 	. (\x -> iterate (move (minimum x) (maximum x)) x)
--- 	. fromList
--- 	. (\l -> l ++ [succ (maximum l) .. 10000])
--- 	. map ((read :: String->Int) . return)
--- 	. head
--- 	. words
-
--- in
--- main
--- '
+-}
