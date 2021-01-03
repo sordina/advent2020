@@ -29,4 +29,5 @@ executable advent2020
     array,
     arithmoi,
     parsec,
-    vector
+    vector,
+    free
