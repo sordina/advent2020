@@ -5,8 +5,9 @@ Various solutions to the 2020 problems. Golf style!
 ## Background
 
 Original solutions were written as "oneliners" with a custom build of the
-`hoe` tool. You can find these solutions in the root of this project. Since
-this makes it difficult to run them yourself, I've created a cabal project to
+`hoe` tool, as well as several solutions in `perl` and `j`. You can find
+these solutions in the ./oneliners/ directory of this project. Since this
+makes it difficult to run them yourself, I've created a cabal project to
 explicitly list all the dependencies, etc.
 
 ## Source
