@@ -1,9 +1,5 @@
 module Advent23 where
 
--- TODO: Import Vector
--- import Data.Vector         as V
--- import Data.Vector.Mutable as MV
-
 import Data.Maybe (fromJust)
 import Data.List (elemIndex, sort)
 import qualified Data.Vector as V
