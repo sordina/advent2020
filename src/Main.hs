@@ -30,16 +30,19 @@ import qualified Advent23
 import qualified Advent24
 import qualified Advent25
 
+interactShow :: Show a => (String -> a) -> IO ()
+interactShow f = interact (show . f)
+
 days :: [(String, IO ())]
 days =
-    [ ("1",   interact (show . Advent01.day1))
-    , ("1b",  interact (show . Advent01.day1b))
-    , ("2",   interact (show . Advent02.day2))
-    , ("2b",  interact (show . Advent02.day2b))
-    , ("3",   interact Advent03.day3)
-    , ("3b",  interact Advent03.day3b)
-    , ("4",   interact Advent04.day4)
-    , ("4b",  interact Advent04.day4b)
+    [ ("1",   interactShow Advent01.day1)
+    , ("1b",  interactShow Advent01.day1b)
+    , ("2",   interactShow Advent02.day2)
+    , ("2b",  interactShow Advent02.day2b)
+    , ("3",   interactShow Advent03.day3)
+    , ("3b",  interactShow Advent03.day3b)
+    , ("4",   interactShow Advent04.day4)
+    , ("4b",  interactShow Advent04.day4b)
     , ("5",   interact Advent05.day5)
     , ("5b",  interact Advent05.day5b)
     , ("6",   interact Advent06.day6)
