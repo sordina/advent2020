@@ -32,9 +32,10 @@ import qualified Advent25
 
 days :: [(String, IO ())]
 days =
-    [ ("1",   interact Advent01.day1)
-    , ("2",   interact Advent02.day2)
-    , ("2b",  interact Advent02.day2b)
+    [ ("1",   interact (show . Advent01.day1))
+    , ("1b",  interact (show . Advent01.day1b))
+    , ("2",   interact (show . Advent02.day2))
+    , ("2b",  interact (show . Advent02.day2b))
     , ("3",   interact Advent03.day3)
     , ("3b",  interact Advent03.day3b)
     , ("4",   interact Advent04.day4)
