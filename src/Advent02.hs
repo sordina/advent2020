@@ -13,8 +13,9 @@ import Control.Lens ( (^..) )
 
 day2 = f f2
     where
-    f2 [l,h,c,p] = n c p >= read (T.unpack l) && n c p <= read (T.unpack h)
-    n c p = T.length (T.filter (== T.index c 0) p)
+    f2 [l,h,c,p] = n >= read (T.unpack l) && n <= read (T.unpack h)
+        where
+        n = T.length (T.filter (== T.index c 0) p)
 
 -- "Each policy actually describes two positions in the password, where 1 means
 --  the first character, 2 means the second character, and so on. (Be careful;

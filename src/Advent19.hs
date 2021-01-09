@@ -1,6 +1,7 @@
 module Advent19 where
 
 -- See http://sordina.github.io/blog/2021/01/03/1609638326-advent19b.html for writeup.
+-- https://hackage.haskell.org/package/parser-combinators
 
 import Data.Either (rights)
 import Text.Parsec (try, choice, string, eof, parse, Parsec)
