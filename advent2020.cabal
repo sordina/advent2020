@@ -30,4 +30,6 @@ executable advent2020
     arithmoi,
     parsec,
     vector,
-    free
+    free,
+    yoctoparsec,
+    parser-combinators

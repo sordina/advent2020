@@ -19,6 +19,9 @@ import Control.Applicative ( Alternative(empty, (<|>)) )
 import qualified Data.List as L
 import qualified Data.Map  as M
 
+import Control.Monad.Yoctoparsec
+import qualified Control.Applicative.Combinators as PC
+
 day19
     = show . length .  rights
     . (\(s,p) -> map (parse p "rules") s)
@@ -36,7 +39,8 @@ day19
       m ! k = fromJust $ M.lookup k m
 
 day19b
-    = show . length -- (\x -> map drawTree x ++ [show $ length x])
+    -- = concat . (\x -> map drawTree x ++ [show $ length x])
+    = show . length
     . map (fst . head)
     . filter (not . null)
     . (\(s,p) -> map (parseString p) s)
@@ -45,12 +49,8 @@ day19b
 
     where
 
-    token            = FreeT . pure . Free $ FreeT . pure . Pure
-    parseStream next = runStateT . iterTM (StateT next >>=)
-    parseString      = parseStream (maybe empty pure . L.uncons)
-    char c           = mfilter (==c) token
-    string           = mapM char
-    choice           = foldl (<|>) empty
+    char c = mfilter (==c) token
+    string = mapM char
 
     sub t@("8", _) = t & _2 .~ [["42"],["42","8"]]
     sub t@("11",_) = t & _2 .~ [["42","31"],["42","11","31"]]
@@ -62,7 +62,7 @@ day19b
     build r = fmap (Node "0") $ a ! "0" <* string "EOF"
         where
         a = M.fromList (map (second g) r)
-        g = choice . map (traverse f)
+        g = PC.choice . map (traverse f)
         f n@(x:xs)
             | isDigit x  = Node n <$> a ! n
             | otherwise  = Node n [] <$ string (init xs)
