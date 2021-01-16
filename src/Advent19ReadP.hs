@@ -1,13 +1,9 @@
-module Advent19 where
+module Advent19ReadP where
 
 -- See http://sordina.github.io/blog/2021/01/03/1609638326-advent19b.html for writeup.
--- https://hackage.haskell.org/package/yoctoparsec-0.1.0.0
--- https://hackage.haskell.org/package/parser-combinators
--- 
--- Also implemented in Advent19ReadP.hs - Uses ReadP from base.
+-- https://hackage.haskell.org/package/base-4.14.1.0/docs/Text-ParserCombinators-ReadP.html
 
 import Data.Either (rights)
-import Text.Parsec (try, choice, string, eof, parse, Parsec)
 import Control.Arrow (second, Arrow((&&&)))
 import Data.List.Split (splitOn)
 import Data.Char (isDigit)
@@ -22,23 +18,22 @@ import Control.Applicative ( Alternative(empty, (<|>)) )
 import qualified Data.List as L
 import qualified Data.Map  as M
 
-import Control.Monad.Yoctoparsec
-import qualified Control.Applicative.Combinators as PC
+import Text.ParserCombinators.ReadP ( ReadP, choice, eof, readP_to_S, string )
 
 day19
-    = show . length .  rights
-    . (\(s,p) -> map (parse p "rules") s)
+    = show . length
+    . (\(s,p) -> map (readP_to_S p) s)
     . (last &&& foo . map ((init . head &&& splitOn ["|"] . tail) . words) .  head)
     . splitOn [""] . lines
     where
-    foo :: [(String,[[String]])] -> Parsec String () ()
+    foo :: [(String,[[String]])] -> ReadP ()
     foo r = a ! "0" *> eof
       where
       a = M.fromList (map g r)
       f n@(x:xs)
         | isDigit x = a ! n
         | otherwise = () <$ string (init xs)
-      g = second (choice . map (try . mapM_ f))
+      g = second (choice . map (mapM_ f))
       m ! k = fromJust $ M.lookup k m
 
 day19b
@@ -46,14 +41,11 @@ day19b
     = show . length
     . map (fst . head)
     . filter (not . null)
-    . (\(s,p) -> map (parseString p) s)
-    . (map (++"EOF") . last &&& build . map (sub . (init . head &&& splitOn ["|"] . tail) . words) .  head)
+    . (\(s,p) -> map (readP_to_S p) s)
+    . (last &&& build . map (sub . (init . head &&& splitOn ["|"] . tail) . words) .  head)
     . splitOn [""] . lines
 
     where
-
-    char c = mfilter (==c) token
-    string = mapM char
 
     sub t@("8", _) = t & _2 .~ [["42"],["42","8"]]
     sub t@("11",_) = t & _2 .~ [["42","31"],["42","11","31"]]
@@ -61,11 +53,10 @@ day19b
 
     m ! k = fromJust $ M.lookup k m
 
-    build :: [(String,[[String]])] -> FreeT ((->) Char) [] (Tree String)
-    build r = fmap (Node "0") $ a ! "0" <* string "EOF"
+    build r = fmap (Node "0") $ a ! "0" <* eof
         where
         a = M.fromList (map (second g) r)
-        g = PC.choice . map (traverse f)
+        g = choice . map (traverse f)
         f n@(x:xs)
             | isDigit x  = Node n <$> a ! n
             | otherwise  = Node n [] <$ string (init xs)

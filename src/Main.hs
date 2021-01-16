@@ -23,6 +23,7 @@ import qualified Advent16
 import qualified Advent17
 import qualified Advent18
 import qualified Advent19
+import qualified Advent19ReadP
 import qualified Advent20
 import qualified Advent21
 import qualified Advent22
@@ -84,6 +85,9 @@ days =
     , ("24",  interact Advent24.day24)
     , ("24b", interact Advent24.day24b)
     , ("25",  interact Advent25.day25)
+
+    , ("19ReadP",  interact Advent19ReadP.day19)
+    , ("19ReadPb", interact Advent19ReadP.day19b)
     ]
 
 help :: a
