@@ -45,7 +45,7 @@ day16b
     where
     reduce l    = map (\m -> filter (\n-> sing m || notElem n (concat (filter sing l))) m) l
     sing        = (==1) . length
-    fixf f      = fst . head . dropWhile (uncurry (/=)) . uncurry zip . (id &&& tail) . iterate f
+    fixf f      = fst . until (uncurry (==)) ((f &&& id) . fst) . (f&&&id)
     r2 l        = let (a,b) = unzip l in zip a $ reduce b
     mkRule r n  = any (\(a,b) -> n >= a && n <= b) r
     rules r x   = none ($ x) (map mkRule r)

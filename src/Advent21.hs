@@ -8,8 +8,8 @@ import Control.Arrow ((&&&))
 import Data.List (nub, sort, intercalate, intersect, (\\))
 import Data.Bifunctor (Bifunctor(bimap))
 
-fixf :: Eq a => (a -> a) -> a -> a
-fixf f = fst . head . dropWhile (uncurry (/=)) . uncurry zip . (id &&& tail) . iterate f
+fixf :: Eq a => (a->a)->a->a
+fixf f = fst . until (uncurry (==)) ((f &&& id) . fst) . (f&&&id)
 
 day21
     = show . length . concatMap fst . fixf reduce

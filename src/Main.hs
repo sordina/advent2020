@@ -30,6 +30,7 @@ import qualified Advent22
 import qualified Advent23
 import qualified Advent24
 import qualified Advent25
+import Control.Arrow (Arrow((&&&)))
 
 interactShow :: Show a => (String -> a) -> IO ()
 interactShow f = interact (show . f)
@@ -99,3 +100,10 @@ main = do
     case as of
         [d] -> fromMaybe help (lookup d days)
         _   -> help
+
+foo :: Eq a => (a->a)->a->a
+foo f = fst . until (uncurry (==)) ((f &&& id) . fst) . (f&&&id)
+
+-- >>> foo (fromInteger . floor) (9.9 :: Double)
+-- 9.9
+
