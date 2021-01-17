@@ -100,10 +100,3 @@ main = do
     case as of
         [d] -> fromMaybe help (lookup d days)
         _   -> help
-
-foo :: Eq a => (a->a)->a->a
-foo f = fst . until (uncurry (==)) ((f &&& id) . fst) . (f&&&id)
-
--- >>> foo (fromInteger . floor) (9.9 :: Double)
--- 9.9
-
