@@ -1,8 +1,9 @@
 module Main where
 
-import Data.Maybe
-import System.Environment ( getArgs )
-import Data.List (intercalate)
+import           Control.Arrow      (Arrow ((&&&)))
+import           Data.List          (intercalate)
+import           Data.Maybe         (fromMaybe)
+import           System.Environment (getArgs)
 
 import qualified Advent01
 import qualified Advent02
@@ -30,7 +31,6 @@ import qualified Advent22
 import qualified Advent23
 import qualified Advent24
 import qualified Advent25
-import Control.Arrow (Arrow((&&&)))
 
 interactShow :: Show a => (String -> a) -> IO ()
 interactShow f = interact (show . f)
