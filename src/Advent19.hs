@@ -53,8 +53,8 @@ day19
 -- 11: 42 31 | 42 11 31
 
 day19b
-    -- = concat . (\x -> map drawTree x ++ [show $ length x])
-    = show . length
+    = concat . (\x -> map drawTree x ++ [show $ length x])
+    -- = show . length
     . map (fst . head)
     . filter (not . null)
     . (\(s,p) -> map (parseString p) s)

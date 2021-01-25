@@ -19,7 +19,7 @@ day12 = show . (\(a,b,_)->abs a+abs b) . ((0,0,'E')&~) . mapM_ x . map (\(l:n)->
     ('R',n)  -> x ('L',360-n)
     ('F',n)  -> _3<%=id >>= fromJust . flip lookup [('E',_1+=n),('S',_2-=n),('W',_1-=n),('N',_2+=n)]
 
-day12b = show . (\(a,b,_)->abs a+abs b) . ((0,0,(10,1))&~) . mapM_ x . map (\(l:n)->(l,read n)) . words
+day12b = show . (\(a,b,_)->abs a+abs b) . ((0,0,(10,1))&~) . mapM_ (x . (\(l:n)->(l,read n))) . words
   where
   x :: (Char,Int) -> State (Int,Int,(Int,Int)) ()
   x = \case
