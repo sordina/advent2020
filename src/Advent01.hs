@@ -1,14 +1,16 @@
 
 module Advent01 where
 
+import Data.List
+
 -- "Specifically, they need you to find the two entries that sum to 2020 and then
 --  multiply those two numbers together."
 
-day1  = head . (\x -> [a*b | a<-x, b<-x, a+b == 2020]) . map read . words
+day1  = head . (\x -> [a*b | a <- x, b <- delete a x, a+b == 2020]) . map read . words
 
 -- "What is the product of the three entries that sum to 2020?"
 
-day1b  = head . (\x -> [a*b*c | a<-x, b<-x, c<-x, a+b+c == 2020]) . map read . words
+day1b=head.(\x->[a*b*c|a<-x,(#)<-[delete],y<-[a#x],b<-y,c<-b#y,a+b+c==2020]).map read.words
 
 
 -- "Multiplying them together produces 1721 * 299 = 514579, so the correct answer is 514579."

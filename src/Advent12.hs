@@ -2,8 +2,8 @@
 
 module Advent12 where
 
-import Control.Monad.State
-import Control.Lens ( (&~), (<%=), (%=), (+=), (-=), Field1(_1), Field2(_2), Field3(_3) )
+import Control.Monad.State ( replicateM_, modify, State )
+import Control.Lens (use, Zoom(zoom), uses,  (&~), (<%=), (%=), (+=), (-=), Field1(_1), Field2(_2), Field3(_3) )
 import Data.Maybe (fromJust)
 
 day12 = show . (\(a,b,_)->abs a+abs b) . ((0,0,'E')&~) . mapM_ x . map (\(l:n)->(l,read n)) . words
@@ -17,7 +17,7 @@ day12 = show . (\(a,b,_)->abs a+abs b) . ((0,0,'E')&~) . mapM_ x . map (\(l:n)->
     ('L',90) -> _3 %= fromJust . flip lookup [('E','N'),('S','E'),('W','S'),('N','W')]
     ('L',n)  -> x ('L',90) >> x ('L',n-90)
     ('R',n)  -> x ('L',360-n)
-    ('F',n)  -> _3<%=id >>= fromJust . flip lookup [('E',_1+=n),('S',_2-=n),('W',_1-=n),('N',_2+=n)]
+    ('F',n)  -> use _3 >>= fromJust . flip lookup [('E',_1+=n),('S',_2-=n),('W',_1-=n),('N',_2+=n)]
 
 day12b = show . (\(a,b,_)->abs a+abs b) . ((0,0,(10,1))&~) . mapM_ (x . (\(l:n)->(l,read n))) . words
   where

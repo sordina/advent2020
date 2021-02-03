@@ -33,4 +33,5 @@ executable advent2020
     vector,
     free,
     yoctoparsec,
-    parser-combinators
+    parser-combinators,
+    template-haskell
